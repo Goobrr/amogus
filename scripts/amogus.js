@@ -23,7 +23,7 @@ let amogus = extend(UnitType, "amogus", {
             return (!t.dead && (t != u)) && Mathf.within(relativeX, relativeY, killRange);
         });
 
-        this.killCooldown--;
+        this.killCooldown -= Time.delta;
         this.killCooldown = Mathf.clamp(this.killCooldown, 0, killCooldown);
 
         // this can kill multiple units for some reason but i dont give a shit
@@ -36,6 +36,21 @@ let amogus = extend(UnitType, "amogus", {
             require("amogusEffect").at(this.target.x, this.target.y, angle);
         }
     },
+
+    draw(u){
+        this.super$draw(u);
+        if(this.target == null)return;
+        Draw.color(Pal.remove);
+        Draw.z(Layer.overlayUI);
+        
+        for(let i = 0; i < 4; i++){
+            let rot = i * 90 + 45 + (-Time.time) % 360;
+            let length = this.target.type.hitSize + 2;
+            let x = Angles.trnsx(rot, length);
+            let y = Angles.trnsy(rot, length);
+            Draw.rect("select-arrow", this.target.x + x, this.target.y + y, length / 1.9, length / 1.9, rot - 135);
+        };
+    }
 
 });
 
